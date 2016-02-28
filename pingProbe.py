@@ -18,14 +18,14 @@ running_processes = set()
 for ip in network.hosts():
     ping = ["ping", "-c", "1", str(ip)]
     process = (subprocess.Popen(ping, stdout=open(os.devnull, 'wb')), ip)
-    running_processes.add(process) 
-    
+    running_processes.add(process)
+
 # Loop until all processes are done
 while running_processes:
     # Keep running through the list of processes until getting result
     for proc in running_processes:
         retcode = proc[0].poll()
-        
+
         # Are you ready yet?
         if retcode is not None:
             # Ready, print the ip address and remove the process from the process list
