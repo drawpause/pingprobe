@@ -1,22 +1,24 @@
 import os, subprocess, time, argparse, ipaddress
 
-#parser = argparse.ArgumentParser(description='Description here')
-#parser.add_argument('-n', '--network', dest='network', type=str, required=True,help='IP Network')
+# Get the args
+parser = argparse.ArgumentParser(description='Description here')
+parser.add_argument('-n', '--network', dest='network', type=str, required=True,help='IP Network')
+args = parser.parse_args()
 
-subnet = "10.0.1"
-max = 255
-
-#tissi = ipaddress.ip_network('192.168.0.0/28')
+try:
+    network = ipaddress.IPv4Network(unicode(args.network))
+except ValueError:
+    print 'address/netmask is invalid for IPv4: ' + args.network
+    exit()
 
 # Init the process list. To be populated later
 running_processes = set()
 
 # Go through the subnet range and create a process for each
-for i in range(1,max):
-    ip = subnet + "." + str(i)
-    ping = ["ping", "-c", "1", ip]
+for ip in network.hosts():
+    ping = ["ping", "-c", "1", str(ip)]
     process = (subprocess.Popen(ping, stdout=open(os.devnull, 'wb')), ip)
-    running_processes.add(process)    
+    running_processes.add(process) 
     
 # Loop until all processes are done
 while running_processes:
@@ -33,6 +35,5 @@ while running_processes:
             running_processes.remove(proc)
             break
         else:
-            # Not ready, let's wait
-            time.sleep(.1)
+            # Not ready, move on
             continue
