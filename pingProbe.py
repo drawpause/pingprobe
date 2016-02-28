@@ -6,9 +6,9 @@ parser.add_argument('-n', '--network', dest='network', type=str, required=True,h
 args = parser.parse_args()
 
 try:
-    network = ipaddress.IPv4Network(unicode(args.network))
+    network = ipaddress.IPv4Network(args.network)
 except ValueError:
-    print 'address/netmask is invalid for IPv4: ' + args.network
+    print('address/netmask is invalid for IPv4: ' + args.network)
     exit()
 
 # Init the process list. To be populated later
@@ -31,7 +31,7 @@ while running_processes:
             # Ready, print the ip address and remove the process from the process list
             # Do not print if host unreachable
             if retcode == 0:
-                print proc[1]
+                print(proc[1])
             running_processes.remove(proc)
             break
         else:
